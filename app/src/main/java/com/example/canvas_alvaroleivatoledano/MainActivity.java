@@ -3,6 +3,7 @@ package com.example.canvas_alvaroleivatoledano;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,80 +12,54 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Vista vista = new Vista(this);
-        setContentView(vista);
+        //Vista vista = new Vista(this);
+        //setContentView(vista);
+        DynamicView myView = new DynamicView(this, 1200, 1600);
+        setContentView(myView);
     }
 
-    class Vista extends View {
+    class DynamicView extends View {
+        int i = 0;
+        Bitmap frame ;
+        Canvas frameDrawer;
+        Rect bounds;
+        Paint paint ;
+        Random random ;
+        int width , height;
 
-        public Vista(Context context) {
+        public DynamicView(Context context ,int width ,int height) {
             super(context);
+
+            this.width = width;
+            this.height = height;
+
+            frame = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+            frameDrawer = new Canvas(frame);
+            bounds = new Rect(0 , 0, width,height);
+            paint = new Paint();
+            random = new Random();
         }
 
-        public void onDraw(Canvas canvas) {
-            /*
-            Paint rectangle = new Paint();
-            rectangle.setStyle(Paint.Style.FILL_AND_STROKE);
-            rectangle.setStrokeWidth(5);
-            rectangle.setColor(Color.BLUE);
+        @Override
+        protected void onDraw(Canvas canvas) {
 
-            int ancho = canvas.getWidth();
-            canvas.drawRect(10,100,ancho-10,20,rectangle);
-             */
-            //super.onDraw(canvas);
+            paint.setColor(Color.argb(255, random.nextInt(255),
+                    random.nextInt(255), random.nextInt(255)));
+            frameDrawer.drawCircle(random.nextInt(width), random.nextInt(height), 50, paint);
+            canvas.drawBitmap(frame, null, bounds , null);
 
-            int ancho = canvas.getWidth();
-            int alto = canvas.getHeight();
-            int centroX = canvas.getWidth()/2;
-            int centroY = canvas.getHeight()/2;
-
-            Paint circleRed = new Paint();
-            circleRed.setStyle(Paint.Style.FILL_AND_STROKE);
-            circleRed.setARGB(255, 255, 0, 0);
-
-            Paint circleYellow = new Paint();
-            circleYellow.setStyle(Paint.Style.FILL_AND_STROKE);
-            circleYellow.setARGB(255, 255, 251, 64);
-
-            Paint circleOrange = new Paint();
-            circleOrange.setStyle(Paint.Style.FILL_AND_STROKE);
-            circleOrange.setARGB(255, 255, 174, 64);
-
-            Paint circleBlue = new Paint();
-            circleBlue.setStyle(Paint.Style.FILL_AND_STROKE);
-            circleBlue.setARGB(255, 64, 154, 255);
-
-            Paint oval = new Paint();
-            oval.setStrokeWidth(5);
-            oval.setStyle(Paint.Style.STROKE);
-            oval.setARGB(255, 64, 227, 255);
-            RectF rectangulo = new RectF(100, 100, ancho-100, alto-100);
-            RectF rectangulo1 = new RectF(40, 500, ancho-40, alto-500);
-
-            canvas.drawCircle(centroX-120, centroY, 60, circleRed);
-            canvas.drawCircle(centroX+70, centroY-80, 60, circleOrange);
-            canvas.drawCircle(centroX-50, centroY+80, 60, circleRed);
-            canvas.drawCircle(centroX, centroY+80, 60, circleYellow);
-            canvas.drawCircle(centroX+70, centroY+80, 60, circleOrange);
-            canvas.drawCircle(centroX-130, centroY+100, 60, circleOrange);
-            canvas.drawCircle(centroX+110, centroY-80, 60, circleRed);
-            canvas.drawCircle(centroX, centroY-80, 60, circleYellow);
-            canvas.drawCircle(centroX-110, centroY-80, 60, circleOrange);
-            canvas.drawCircle(centroX+100, centroY, 60, circleYellow);
-            canvas.drawCircle(centroX-90, centroY+20, 60, circleYellow);
-            canvas.drawCircle(centroX, centroY, 60, circleRed);
-            canvas.drawOval(rectangulo, oval);
-            canvas.drawOval(rectangulo1, oval);
-            canvas.drawCircle(centroX, 100, 20, circleBlue);
-            canvas.drawCircle(centroX+250, alto-220, 20, circleBlue);
-            canvas.drawCircle(ancho-100, centroY, 20, circleBlue);
-            canvas.drawCircle(centroX-200, centroY-250, 20, circleBlue);
+            if (i < 1000) {
+                i++;
+                invalidate();
+            }
         }
+
     }
-
 }
